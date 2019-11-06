@@ -1,19 +1,28 @@
 package View;
 
+
 import java.io.*;
 public class ClientRequestHandler extends Thread {
+private String token="";
     public void run(){
 
     }
     public void sendRequest(PrintWriter outToServer, BufferedReader inFromServer,Gameboard printer,String message){
         String newMessage;
+        message = token+";"+getLength(message)+":"+message;
         try {
             outToServer.println(message + '\n');
             newMessage = inFromServer.readLine();
             String[] response = newMessage.split(",");
-            checkAliveAndWin(printer, response);
+            this.token = response[7];
+            if(response[0].equals("loginError")){
+                printer.loginErrorLine();
+            }else {
+                checkAliveAndWin(printer, response);
+            }
         } catch (Exception e){
             System.out.println(e.getStackTrace());
+
         }
     }
     private void checkAliveAndWin(Gameboard printer,String[] response){
@@ -30,5 +39,19 @@ public class ClientRequestHandler extends Thread {
             printer.makeLine(response);
         }
 
+    }
+    private String getLength(String message){
+        try {
+            ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteOutputStream);
+            objectOutputStream.writeBytes(message);
+            objectOutputStream.flush();
+            objectOutputStream.close();
+            int length = byteOutputStream.toByteArray().length;
+            return String.valueOf(length);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return "";
     }
 }

@@ -2,6 +2,7 @@ package Model;
 
 import java.util.ArrayList;
 import java.lang.*;
+import java.util.Arrays;
 
 
 public class Game extends Thread {
@@ -12,34 +13,58 @@ public class Game extends Thread {
     private int remainingAttempts;
     private String word = "";
     private String currentHiddenWord="";
+    private String token= " ";
     WordHandler wordHandler = new WordHandler();
+    JavaToken javaToken = new JavaToken();
+    private String usernameDB="jakob";
+    private String passwordDB="molin";
+
     public void run() {
     }
 
     // The request string will look like: "request,letter/word"
     // The response string will look like: "request,requestInfo,remainingAttempts,Score,Alive,usedLetters,Win"
-    public String requestHandler(String request)throws InterruptedException{
+    public String requestHandler(String request,String token)throws InterruptedException{
         String[] requestArray = request.split(",");
-
+        if(token.length()<1){
+            token = "asdf";
+        }
         switch(requestArray[0]) {
             case "newWord":
-                this.newWord();
-                return "newWord,"+ this.currentHiddenWord +","+this.remainingAttempts+","+this.score+","+this.alive+","+this.usedLetters+","+this.hasWon;
-
+                if(javaToken.validateKey(token,this.usernameDB)) {
+                    this.newWord();
+                    return "newWord," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
+                } else {
+                    return "loginError," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
+                }
             case "guess":
-                guess(requestArray[1].toCharArray());
-                checkVictoryOrLoss();
-                return "guess,"+ this.currentHiddenWord +","+this.remainingAttempts+","+this.score+","+this.alive+","+this.usedLetters+","+this.hasWon;
+                if(javaToken.validateKey(token,this.usernameDB)) {
 
+                    guess(requestArray[1].toCharArray());
+                    checkVictoryOrLoss();
+                    return "guess," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
+                } else {
+                    return "loginError," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
+                }
             case "guessWord":
-                this.guessWord(requestArray[1]);
-                checkVictoryOrLoss();
-                return "guessWord,"+this.currentHiddenWord+","+this.remainingAttempts+","+this.score+","+this.alive+","+this.usedLetters+","+this.hasWon;
-        }
+                if(javaToken.validateKey(token,this.usernameDB)) {
+                    this.guessWord(requestArray[1]);
+                    checkVictoryOrLoss();
+                    return "guessWord," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
+                } else {
+                    return "loginError," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
+                }
+            case "login":
+                if(this.login(requestArray[1],requestArray[2])) {
+                    return "guessWord," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
+                } else {
+                    return "loginError," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
+                }
+            }
         return "error";
     }
 
-    public void newWord(){
+    private void newWord(){
         this.usedLetters="";
         this.hasWon=false;
         this.remainingAttempts = 7;
@@ -51,7 +76,7 @@ public class Game extends Thread {
         }
     }
 
-    public void guess(char[] letters){
+    private void guess(char[] letters){
         if(!hasWon) {
             char guessedLetter = Character.toLowerCase(letters[0]);
             this.usedLetters += guessedLetter+" ";
@@ -90,5 +115,21 @@ public class Game extends Thread {
         if(this.remainingAttempts<0){
             this.alive=false;
         }
+    }
+
+    private boolean login(String username,String password){
+        if(checkCredentials(username,password)) {
+            this.token=javaToken.createKey(username);
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    private boolean checkCredentials(String username,String password){
+        if(username.equals(this.usernameDB)&&password.equals(this.passwordDB)){
+            return true;
+        }
+        return false;
     }
 }

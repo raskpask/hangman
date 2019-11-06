@@ -19,8 +19,7 @@ public class Client extends Thread{
             clientRequestHandler.start();
             while(true) {
                 System.out.println(printer.getGameboard()+printer.gameInfo());
-                message = inputHandler(inFromUser.readLine());
-                //clientRequestHandler.sendRequest(outToServer,inFromServer,printer,header.toString(header));
+                message = inputHandler(inFromUser.readLine(),inFromUser);
                 clientRequestHandler.sendRequest(outToServer,inFromServer,printer,message);
             }
         }catch(Exception e){
@@ -28,23 +27,32 @@ public class Client extends Thread{
         }
 
     }
-    private String inputHandler(String input){
+    private String inputHandler(String input,BufferedReader inFromUser){
         if(0<input.length() && input.length()<2){
-            return ":guess,"+input;
+            return "guess,"+input;
         } else if(input.equals("new")){
             //this.header.setRequest(":newWord,"+input);
-            return ":newWord";
+            return "newWord";
+        } else if(input.equals("login")){
+            System.out.println("Write username and password separated with ',' like: user,pass ");
+            String credentials="";
+            try {
+                credentials = inFromUser.readLine();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+            return "login,"+ credentials;
         } else if(input.length()<1) {
             //this.header.setRequest(":guess, ");
             System.out.println("You have to write something a attempt will be lost");
-            return ":guess, ";
+            return "guess, ";
         } else if (input.equals("quit")) {
 
             System.exit(0);
             return "";
         } else {
             //this.header.setRequest(":guessWord,"+input);
-            return ":guessWord,"+input;
+            return "guessWord,"+input;
         }
 
     }

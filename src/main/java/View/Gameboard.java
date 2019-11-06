@@ -11,7 +11,7 @@ public class Gameboard {
     }
 
     public String makeHead(){
-        return  "\n\n\n\n\n\n\n\n\n\n"+
+        return  "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"+
                 "-------------------------------------------------------------------------------------------------\n" +
                 "|    Used Letters     |       Word      | Remaining failed attempts |       Score               |\n" +
                 "-------------------------------------------------------------------------------------------------\n";
@@ -23,6 +23,7 @@ public class Gameboard {
                 "quit     : Quits the game\n" +
                 "a letter : Guesses a letter\n" +
                 "a word   : Guesses the word\n" +
+                "login    : Login to the game\n" +
                 "Enter a command:";
     }
 
@@ -31,6 +32,7 @@ public class Gameboard {
         this.gameboard +=
                 "|" + response[5]+"|  "+response[1]+"  |          "+response[2]+"          |       " + response[3] + "       |\n"+
                 "------------------------------------------------------------------------------------------------\n";
+
     }
     public void endGame(boolean win,String[] response){
         if(!win){
@@ -44,5 +46,11 @@ public class Gameboard {
                     "| You won and one point has been added to your score! To try a new word write new. Score: "+response[3]+"    |\n"+
                     "------------------------------------------------------------------------------------------------\n";
         }
+    }
+    public void loginErrorLine(){
+        this.gameboard +="\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"+
+                        "------------------------------------------------------------------------------------------------\n"+
+                        "Please login before starting the game!\n"+
+                        "------------------------------------------------------------------------------------------------\n";
     }
 }

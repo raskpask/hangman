@@ -10,10 +10,9 @@ public class WordHandler {
     public String getWord(){
         String word = "";
         try {
-            System.out.println(userHome);
             File file = new File(WORD_FILE);
             Scanner scanner = new Scanner(file);
-            System.out.println(scanner.next());
+            //System.out.println(scanner.next());
             int random = randomGenerator.nextInt(51528);
             for(int i=0;i< random;i++){
                 scanner.next();
