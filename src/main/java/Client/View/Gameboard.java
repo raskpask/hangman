@@ -1,4 +1,6 @@
-package View;
+package Client.View;
+
+//import View.Client;
 
 public class Gameboard {
     private String gameboard;

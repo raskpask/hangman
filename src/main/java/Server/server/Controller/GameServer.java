@@ -1,6 +1,8 @@
-package Controller.server;
+package Server.server.Controller;
 import java.io.*;
-import Model.Game;
+
+import Server.Model.Game;
+
 
 
 public class GameServer extends Thread {

@@ -1,5 +1,7 @@
-package View;
+package Client.View;
 
+
+//import View.Client;
 
 import java.io.*;
 public class ClientRequestHandler extends Thread {

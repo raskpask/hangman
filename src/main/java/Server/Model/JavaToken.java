@@ -1,4 +1,4 @@
-package Model;
+package Server.Model;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;

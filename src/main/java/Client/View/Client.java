@@ -1,4 +1,4 @@
-package View;
+package Client.View;
 
 import java.io.*;
 import java.net.*;

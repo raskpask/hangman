@@ -1,11 +1,11 @@
-package Model;
+package Server.Model;
 
 import java.io.*;
 import java.util.*;
 
 public class WordHandler {
     String userHome = System.getProperty("user.dir");
-    public final String WORD_FILE = userHome + "/src/main/java/Model/words.txt";
+    public final String WORD_FILE = userHome + "/src/main/java/Server/Model/words.txt";
     Random randomGenerator = new Random();
     public String getWord(){
         String word = "";
