@@ -2,7 +2,6 @@ package Model;
 
 import java.util.ArrayList;
 import java.lang.*;
-import java.util.Arrays;
 
 
 public class Game extends Thread {

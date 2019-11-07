@@ -2,8 +2,6 @@ package Controller.server;
 import java.io.*;
 import Model.Game;
 
-import static java.lang.Integer.parseInt;
-import static java.lang.Integer.valueOf;
 
 public class GameServer extends Thread {
     BufferedReader inFromClient;

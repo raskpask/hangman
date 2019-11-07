@@ -1,11 +1,10 @@
 package View;
 
-import java.util.*;
 import java.io.*;
 import java.net.*;
 
 public class Client extends Thread{
-
+private String token;
     public void run(){
 
         String message;
@@ -15,19 +14,24 @@ public class Client extends Thread{
             PrintWriter outToServer = new PrintWriter(socket.getOutputStream(), true);
             BufferedReader inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             Gameboard printer= new Gameboard();
-            ClientRequestHandler clientRequestHandler = new ClientRequestHandler();
-            clientRequestHandler.start();
+
+            System.out.println(printer.getGameboard()+printer.gameInfo());
             while(true) {
-                System.out.println(printer.getGameboard()+printer.gameInfo());
                 message = inputHandler(inFromUser.readLine(),inFromUser);
-                clientRequestHandler.sendRequest(outToServer,inFromServer,printer,message);
+                ClientRequestHandler clientRequestHandler = new ClientRequestHandler(outToServer,inFromServer,printer,message,this.token,this);
+                clientRequestHandler.start();
             }
         }catch(Exception e){
             e.printStackTrace();
         }
 
     }
-    private String inputHandler(String input,BufferedReader inFromUser){
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    private String inputHandler(String input, BufferedReader inFromUser){
         if(0<input.length() && input.length()<2){
             return "guess,"+input;
         } else if(input.equals("new")){

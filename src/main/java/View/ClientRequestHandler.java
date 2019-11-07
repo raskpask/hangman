@@ -3,28 +3,40 @@ package View;
 
 import java.io.*;
 public class ClientRequestHandler extends Thread {
-private String token="";
-    public void run(){
-
+private String token;
+private PrintWriter outToServer;
+private BufferedReader inFromServer;
+private Gameboard printer;
+private String message;
+private Client client;
+    public ClientRequestHandler(PrintWriter outToServer, BufferedReader inFromServer,Gameboard printer,String message,String token,Client client){
+        this.outToServer=outToServer;
+        this.inFromServer=inFromServer;
+        this.printer=printer;
+        this.message=message;
+        this.token=token;
+        this.client=client;
     }
-    public void sendRequest(PrintWriter outToServer, BufferedReader inFromServer,Gameboard printer,String message){
+    public void run(){
         String newMessage;
-        message = token+";"+getLength(message)+":"+message;
+        this.message = token+";"+getLength(this.message)+":"+this.message;
         try {
-            outToServer.println(message + '\n');
-            newMessage = inFromServer.readLine();
+            this.outToServer.println(this.message + '\n');
+            newMessage = this.inFromServer.readLine();
             String[] response = newMessage.split(",");
-            this.token = response[7];
+            client.setToken(response[7]);
             if(response[0].equals("loginError")){
-                printer.loginErrorLine();
+                this.printer.loginErrorLine();
             }else {
-                checkAliveAndWin(printer, response);
+                checkAliveAndWin(this.printer, response);
             }
         } catch (Exception e){
             System.out.println(e.getStackTrace());
 
         }
+        System.out.println(this.printer.getGameboard()+this.printer.gameInfo());
     }
+
     private void checkAliveAndWin(Gameboard printer,String[] response){
         if(response[6].equals("true")){
             if(response[6].equals("false")){
