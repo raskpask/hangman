@@ -2,6 +2,10 @@ package Client.View;
 
 import java.io.*;
 import java.net.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.SocketChannel;
+import java.nio.channels.WritableByteChannel;
 
 public class Client extends Thread{
 private String token;
@@ -10,15 +14,17 @@ private String token;
         String message;
         try {
             BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-            Socket socket = new Socket("localhost", 4444);
-            PrintWriter outToServer = new PrintWriter(socket.getOutputStream(), true);
-            BufferedReader inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            //Socket socket = new Socket("localhost", 4444);
+            //PrintWriter outToServer = new PrintWriter(socket.getOutputStream(), true);
+            //BufferedReader inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            SocketChannel channel = SocketChannel.open(new InetSocketAddress("localhost",4444));
+            channel.configureBlocking(false);
             Gameboard printer= new Gameboard();
 
             System.out.println(printer.getGameboard()+printer.gameInfo());
             while(true) {
                 message = inputHandler(inFromUser.readLine(),inFromUser);
-                ClientRequestHandler clientRequestHandler = new ClientRequestHandler(outToServer,inFromServer,printer,message,this.token,this);
+                ClientRequestHandler clientRequestHandler = new ClientRequestHandler(channel,printer,message,this.token,this);
                 clientRequestHandler.start();
             }
         }catch(Exception e){

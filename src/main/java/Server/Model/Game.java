@@ -11,8 +11,8 @@ public class Game extends Thread {
     private int score=0;
     private int remainingAttempts;
     private String word = "";
-    private String currentHiddenWord="";
-    private String token= " ";
+    private String currentHiddenWord=" ";
+    private String token= "token";
     WordHandler wordHandler = new WordHandler();
     JavaToken javaToken = new JavaToken();
     private String usernameDB="jakob";
@@ -26,7 +26,7 @@ public class Game extends Thread {
     public String requestHandler(String request,String token)throws InterruptedException{
         String[] requestArray = request.split(",");
         if(token.length()<1){
-            token = "asdf";
+            token = "token";
         }
         switch(requestArray[0]) {
             case "newWord":
