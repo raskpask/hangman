@@ -1,3 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<eclipse-userlibraries />
+<eclipse-userlibraries>
+  <library name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.0">
+    <archive path="C:/Users/molin/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.9.0/jackson-annotations-2.9.0.jar" />
+  </library>
+  <library name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.9">
+    <archive path="C:/Users/molin/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.9.9/jackson-core-2.9.9.jar" />
+  </library>
+  <library name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.9.1">
+    <archive path="C:/Users/molin/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.9.9.1/jackson-databind-2.9.9.1.jar" />
+  </library>
+  <library name="Maven: io.jsonwebtoken:jjwt-api:0.10.7">
+    <archive path="C:/Users/molin/.m2/repository/io/jsonwebtoken/jjwt-api/0.10.7/jjwt-api-0.10.7.jar" />
+  </library>
+  <library name="Maven: io.jsonwebtoken:jjwt-impl:0.10.7">
+    <archive path="C:/Users/molin/.m2/repository/io/jsonwebtoken/jjwt-impl/0.10.7/jjwt-impl-0.10.7.jar" />
+  </library>
+  <library name="Maven: io.jsonwebtoken:jjwt-jackson:0.10.7">
+    <archive path="C:/Users/molin/.m2/repository/io/jsonwebtoken/jjwt-jackson/0.10.7/jjwt-jackson-0.10.7.jar" />
+  </library>
+</eclipse-userlibraries>
 

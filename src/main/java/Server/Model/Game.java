@@ -24,7 +24,10 @@ public class Game extends Thread {
     // The request string will look like: "request,letter/word"
     // The response string will look like: "request,requestInfo,remainingAttempts,Score,Alive,usedLetters,Win"
     public String requestHandler(String request,String token)throws InterruptedException{
+        request = request.trim();
         String[] requestArray = request.split(",");
+        System.out.println("Message in request handler: "+request);
+
         if(token.length()<1){
             token = "token";
         }
@@ -55,12 +58,12 @@ public class Game extends Thread {
                 }
             case "login":
                 if(this.login(requestArray[1],requestArray[2])) {
-                    return "guessWord," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
+                    return "login," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
                 } else {
                     return "loginError," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
                 }
             }
-        return "error";
+        return "error2";
     }
 
     private void newWord(){

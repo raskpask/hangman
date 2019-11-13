@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="output" path="out/production/ID1212_Network_Programing_jakmol_Homework_1_Hangman"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Maven: io.jsonwebtoken:jjwt-api:0.10.7"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Maven: io.jsonwebtoken:jjwt-impl:0.10.7"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Maven: io.jsonwebtoken:jjwt-jackson:0.10.7"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Maven: com.fasterxml.jackson.core:jackson-databind:2.9.9.1"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.0"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Maven: com.fasterxml.jackson.core:jackson-core:2.9.9"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

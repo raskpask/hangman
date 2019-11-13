@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component inherit-compiler-output="true" inheritJdk="true">
-	<output-test url="file://$MODULE_DIR$/out/test/ID1212_Network_Programing_jakmol_Homework_1_Hangman"/>
-	<exclude-output/>
-	<contentEntry url="file://$MODULE_DIR$"/>
+<component LANGUAGE_LEVEL="JDK_1_8" inheritJdk="true">
+	<output-test url="file://$MODULE_DIR$/target/test-classes"/>
+	<contentEntry url="file://$MODULE_DIR$">
+		<testFolder url="file://$MODULE_DIR$/src/test/java"/>
+		<excludeFolder url="file://$MODULE_DIR$/target"/>
+	</contentEntry>
+	<lib name="Maven: io.jsonwebtoken:jjwt-impl:0.10.7" scope="RUNTIME"/>
+	<lib name="Maven: io.jsonwebtoken:jjwt-jackson:0.10.7" scope="RUNTIME"/>
+	<lib name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.9.1" scope="RUNTIME"/>
+	<lib name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.0" scope="RUNTIME"/>
+	<lib name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.9" scope="RUNTIME"/>
+	<levels>
+		<level name="Maven: io.jsonwebtoken:jjwt-api:0.10.7" value="project"/>
+		<level name="Maven: io.jsonwebtoken:jjwt-impl:0.10.7" value="project"/>
+		<level name="Maven: io.jsonwebtoken:jjwt-jackson:0.10.7" value="project"/>
+		<level name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.9.1" value="project"/>
+		<level name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.0" value="project"/>
+		<level name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.9" value="project"/>
+	</levels>
 </component>

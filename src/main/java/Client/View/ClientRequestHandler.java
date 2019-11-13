@@ -3,6 +3,7 @@ package Client.View;
 
 //import View.Client;
 
+
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -18,45 +19,71 @@ private Selector selector;
 private Gameboard printer;
 private String message;
 private Client client;
-    public ClientRequestHandler(SocketChannel channel, Gameboard printer, String message, String token, Client client){
+private boolean messageRecived=false;
+private boolean timeToSend=false;
+private ByteBuffer msgFromServer = ByteBuffer.allocateDirect(1024);
+private int id;
+
+    public ClientRequestHandler(SocketChannel channel, Gameboard printer, String message, String token, Client client, int id){
         this.channel=channel;
         this.printer=printer;
         this.message=message;
         this.token=token;
         this.client=client;
+        this.id=id;
     }
     public void run(){
-        this.message = token+";"+getLength(this.message)+":"+this.message+"                                                                                                                                           ";
+        this.message = token+";"+id+":"+this.message+"                                                                                                                                           ";
 
-        init();
+        timeToSend=true;
+
+        //init();
 
 
-        while(true){
-            channel.keyFor(selector).interestOps(SelectionKey.OP_WRITE);
+
+            //channel.keyFor(selector).interestOps(SelectionKey.OP_WRITE);
             try {
-                selector.select();
-                Iterator keysIterator = selector.selectedKeys().iterator();
-                while (keysIterator.hasNext()) {
-                    SelectionKey key = (SelectionKey) keysIterator.next();
-                    if (key.isConnectable()) {
-                        System.out.println("Goes inside loop");
-                        channel.register(selector, SelectionKey.OP_READ);
-                    } else if (key.isReadable()) {
-                        System.out.println("Goes inside loop");
-                        receiveMessage(key);
-                        key.interestOps(SelectionKey.OP_WRITE);
-                    } else if (key.isWritable()) {
-                        System.out.println("Goes inside loop");
-                        sendMessage(this.message);
-                        key.interestOps(SelectionKey.OP_READ);
+                selector = Selector.open();
+                channel.register(selector, SelectionKey.OP_CONNECT);
+                while(!messageRecived) {
+                    if (timeToSend) {
+                        channel.keyFor(selector).interestOps(SelectionKey.OP_WRITE);
+                        timeToSend = false;
+                    }
+
+
+                    selector.select();
+                    for (SelectionKey key : selector.selectedKeys()) {
+                        selector.selectedKeys().remove(key);
+                        //Iterator keysIterator = selector.selectedKeys().iterator();
+                        //SelectionKey key = (SelectionKey) keysIterator.next();
+                        //keysIterator.remove();
+                        //selector.wakeup();
+                        //sendMessage(this.message, key);
+                        if (!key.isValid()) {
+                            continue;
+                        }
+                        if (key.isConnectable()) {
+                            //System.out.println("Goes inside loop");
+                            channel.register(selector, SelectionKey.OP_READ);
+                        } else if (key.isReadable()) {
+                            //System.out.println("Goes inside loop read");
+                            receiveMessage(key);
+                        } else if (key.isWritable()) {
+                            //System.out.println("Goes inside loop write");
+                            sendMessage(this.message, key);
+                        }
                     }
                 }
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-            System.out.println(this.printer.getGameboard()+this.printer.gameInfo());
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+        try {
+            //disconnect();
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
+        System.out.println(this.printer.getGameboard()+this.printer.gameInfo());
     }
 
     private void checkAliveAndWin(Gameboard printer,String[] response){
@@ -104,13 +131,16 @@ private Client client;
     }
     public void receiveMessage(SelectionKey key){
         try {
-            ByteBuffer buffer = (ByteBuffer) key.attachment();
-            this.channel.read(buffer);
+            //ByteBuffer buffer = (ByteBuffer) key.attachment();
+            msgFromServer.clear();
+            channel.read(msgFromServer);
 
-            String newMessage = new String(buffer.array()).trim();
-            System.out.println("Client got: " + newMessage);
+            //String newMessage = new String(msgFromServer.array());
+            String newMessage = extractMessageFromBuffer();
+            //System.out.println("Client got: " + newMessage);
             String[] response = newMessage.split(",");
             checkAliveAndWin(printer, response);
+            this.client.setId(Integer.parseInt(response[8]));
             this.client.setToken(response[7]);
             if (response[0].equals("loginError")) {
                 this.printer.loginErrorLine();
@@ -120,15 +150,30 @@ private Client client;
         }catch (Exception e){
             e.printStackTrace();
         }
+        this.messageRecived = true;
+        key.interestOps(SelectionKey.OP_WRITE);
     }
-    public void sendMessage(String message){
+    private String extractMessageFromBuffer(){
+        msgFromServer.flip();
+        byte[] bytes = new byte[msgFromServer.remaining()];
+        msgFromServer.get(bytes);
+        return new String(bytes);
+    }
+    public void sendMessage(String message,SelectionKey key){
         try {
             byte[] messageToServer = message.getBytes();
             ByteBuffer buffer = ByteBuffer.wrap(messageToServer);
             this.channel.write(buffer);
             System.out.println("Sending message: " + message);
+            key.interestOps(SelectionKey.OP_READ);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
+    private void disconnect() throws IOException {
+        channel.close();
+        channel.keyFor(selector).cancel();
+    }
+
+
 }
