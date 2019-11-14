@@ -13,14 +13,16 @@ public class Game extends Thread {
     private String word = "";
     private String currentHiddenWord=" ";
     private String token= "token";
-    WordHandler wordHandler = new WordHandler();
-    JavaToken javaToken = new JavaToken();
+    private WordHandler wordHandler = new WordHandler();
+    private JavaToken javaToken = new JavaToken();
     private String usernameDB="jakob";
     private String passwordDB="molin";
 
     public void run() {
     }
-
+    public void setWord(String word){
+        this.word=word;
+    }
     // The request string will look like: "request,letter/word"
     // The response string will look like: "request,requestInfo,remainingAttempts,Score,Alive,usedLetters,Win"
     public String requestHandler(String request,String token)throws InterruptedException{
@@ -67,15 +69,18 @@ public class Game extends Thread {
     }
 
     private void newWord(){
+        //wordHandler.start();
         this.usedLetters="";
         this.hasWon=false;
         this.remainingAttempts = 7;
         this.alive=true;
         this.word=wordHandler.getWord();
         this.currentHiddenWord ="";
+        while(word.equals(null)){}
         for(int i=0; i<this.word.length();i++){
             this.currentHiddenWord +="_ ";
         }
+
     }
 
     private void guess(char[] letters){

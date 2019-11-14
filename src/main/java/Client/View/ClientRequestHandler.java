@@ -1,16 +1,10 @@
 package Client.View;
 
-
-//import View.Client;
-
-
 import java.io.*;
-import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
 
 public class ClientRequestHandler extends Thread {
 private String token;
@@ -34,18 +28,16 @@ private int id;
     }
     public void run(){
         this.message = token+";"+id+":"+this.message+"                                                                                                                                           ";
-
         timeToSend=true;
 
             try {
                 selector = Selector.open();
-                channel.register(selector, SelectionKey.OP_CONNECT);
+                channel.register(selector, SelectionKey.OP_READ);
                 while(!messageRecived) {
                     if (timeToSend) {
                         channel.keyFor(selector).interestOps(SelectionKey.OP_WRITE);
                         timeToSend = false;
                     }
-
 
                     selector.select();
                     for (SelectionKey key : selector.selectedKeys()) {
@@ -53,14 +45,9 @@ private int id;
                         if (!key.isValid()) {
                             continue;
                         }
-                        if (key.isConnectable()) {
-                            //System.out.println("Goes inside loop");
-                            channel.register(selector, SelectionKey.OP_READ);
-                        } else if (key.isReadable()) {
-                            //System.out.println("Goes inside loop read");
+                        if (key.isReadable()) {
                             receiveMessage(key);
                         } else if (key.isWritable()) {
-                            //System.out.println("Goes inside loop write");
                             sendMessage(this.message, key);
                         }
                     }
@@ -91,29 +78,13 @@ private int id;
         }
 
     }
-    private String getLength(String message){
-        try {
-            ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteOutputStream);
-            objectOutputStream.writeBytes(message);
-            objectOutputStream.flush();
-            objectOutputStream.close();
-            int length = byteOutputStream.toByteArray().length;
-            return String.valueOf(length);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        return "";
-    }
 
     public void receiveMessage(SelectionKey key){
         try {
             msgFromServer.clear();
             channel.read(msgFromServer);
 
-            //String newMessage = new String(msgFromServer.array());
             String newMessage = extractMessageFromBuffer();
-            //System.out.println("Client got: " + newMessage);
             String[] response = newMessage.split(",");
             checkAliveAndWin(printer, response);
             this.client.setId(Integer.parseInt(response[8]));
@@ -146,10 +117,4 @@ private int id;
             e.printStackTrace();
         }
     }
-    private void disconnect() throws IOException {
-        channel.close();
-        channel.keyFor(selector).cancel();
-    }
-
-
 }

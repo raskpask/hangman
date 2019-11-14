@@ -18,7 +18,6 @@ public class Server extends Thread {
     private Game[] games= new Game[50];
     public void run(){
         try {
-
             System.out.println("Server is starting...");
             Selector selector = Selector.open();
             listeningSocketChannel = ServerSocketChannel.open();
@@ -30,76 +29,86 @@ public class Server extends Thread {
                 selector.select();
                 Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
                 while (keys.hasNext()){
-                    try {
-                        SelectionKey key = keys.next();
-                        keys.remove();
-                        if (!key.isValid()) {
-                            continue;
-                        }
-                        if (key.isAcceptable()) {
-                            ServerSocketChannel server = (ServerSocketChannel) key.channel();
-                            Game game1 = new Game();
-                            game1.start();
-                            key.attach(game1);
+                    SelectionKey key = keys.next();
+                    keys.remove();
+                    if (!key.isValid()) {
+                        continue;
+                    }
+                    if (key.isAcceptable()) {
+                        startConnection(key,selector);
+                    } else if (key.isReadable()) {
+                        reciveMessage(key);
 
-                            System.out.println("The key: "+key.toString());
-                            SocketChannel channel = server.accept();
-                            System.out.println("New client connected");
-                            channel.configureBlocking(false);
-                            channel.register(selector, SelectionKey.OP_READ, ByteBuffer.allocate(1024));
-                            channel.setOption(StandardSocketOptions.SO_LINGER, 5000);
-
-                        } else if (key.isReadable()) {
-                            SocketChannel channel = (SocketChannel) key.channel();
-                            msgFromClient.clear();
-                            channel.read(msgFromClient);
-                            String clientMessage = extractMessageFromBuffer();
-                            System.out.println("Message received: " + clientMessage);
-                            String[] token = clientMessage.split(";");
-                            String[] requests = token[1].split(":");
-                            if(requests[0].equals("0")){
-                                Game currentGame = new Game();
-                                currentGame.start();
-                                games[gameID] = currentGame;
-                                newMessage = currentGame.requestHandler(requests[1], token[0]);
-                                newMessage = newMessage + "," + gameID;
-                                gameID++;
-                            } else {
-                                newMessage = this.games[Integer.parseInt(requests[0])].requestHandler(requests[1],token[0]);
-                                newMessage = newMessage + "," + requests[0];
-                            }
-                            key.interestOps(SelectionKey.OP_WRITE);
-
-
-                        } else if (key.isWritable()) {
-                            SocketChannel channel = (SocketChannel) key.channel();
-                            ByteBuffer buffer = (ByteBuffer) key.attachment();
-
-                            byte[] messageToClient = this.newMessage.getBytes();
-                            buffer = ByteBuffer.wrap(messageToClient);
-                            channel.write(buffer);
-                            if (buffer.hasRemaining()) {
-                                buffer.compact();
-                            } else {
-                                buffer.clear();
-                            }
-                            key.interestOps(SelectionKey.OP_READ);
-                            System.out.println("Message sent: " + this.newMessage);
-                        }
-                    }catch(Exception e){
-                        e.printStackTrace();
-                }
+                    } else if (key.isWritable()) {
+                        sendMessage(key);
+                    }
                 }
             }
         } catch(Exception e){
             e.printStackTrace();
         }
     }
-    private String extractMessageFromBuffer() {
-        msgFromClient.flip();
-        byte[] bytes = new byte[msgFromClient.remaining()];
-        msgFromClient.get(bytes);
+    private String extractMessageFromBuffer(ByteBuffer buffer) {
+        buffer.flip();
+        byte[] bytes = new byte[buffer.remaining()];
+        buffer.get(bytes);
         return new String(bytes);
+    }
+    private void startConnection(SelectionKey key,Selector selector){
+        try{
+            ServerSocketChannel server = (ServerSocketChannel) key.channel();
+            System.out.println("The key: "+key.toString());
+            SocketChannel channel = server.accept();
+            System.out.println("New client connected");
+
+            channel.configureBlocking(false);
+            channel.register(selector, SelectionKey.OP_READ, new Attachment(new Game(),ByteBuffer.allocate(1024)));
+            channel.setOption(StandardSocketOptions.SO_LINGER, 5000);
+            //key.attach(new Attachment(new Game(),(ByteBuffer) key.attachment()));
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("Error connecting");
+        }
+    }
+    private void sendMessage(SelectionKey key){
+        try{
+            SocketChannel channel = (SocketChannel) key.channel();
+            ByteBuffer buffer;// = (ByteBuffer) key.attachment();
+
+            byte[] messageToClient = this.newMessage.getBytes();
+            buffer = ByteBuffer.wrap(messageToClient);
+            channel.write(buffer);
+            if (buffer.hasRemaining()) {
+                buffer.compact();
+            } else {
+                buffer.clear();
+            }
+            key.interestOps(SelectionKey.OP_READ);
+            System.out.println("Message sent: " + this.newMessage);
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("Error sending message");
+        }
+    }
+    private void reciveMessage(SelectionKey key){
+        try{
+            SocketChannel channel = (SocketChannel) key.channel();
+            Attachment attachment = (Attachment) key.attachment();
+            ByteBuffer buffer = attachment.getBuffer();
+            buffer.clear();
+            channel.read(buffer);
+            String clientMessage = extractMessageFromBuffer(buffer);
+            System.out.println("Message received: " + clientMessage);
+            String[] token = clientMessage.split(";");
+            String[] requests = token[1].split(":");
+            newMessage = attachment.getGame().requestHandler(requests[1],token[0]);
+            newMessage = newMessage + "," + requests[0];
+            
+            key.interestOps(SelectionKey.OP_WRITE);
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("Error reciving message");
+        }
     }
 
 }
