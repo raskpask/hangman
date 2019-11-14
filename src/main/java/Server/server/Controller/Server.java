@@ -21,8 +21,8 @@ public class Server extends Thread {
 
             System.out.println("Server is starting...");
             Selector selector = Selector.open();
-            Game game = new Game();
-            game.start();
+            //Game game = new Game();
+            //game.start();
 
             listeningSocketChannel = ServerSocketChannel.open();
             listeningSocketChannel.bind(new InetSocketAddress("localhost",4444));

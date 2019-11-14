@@ -2,19 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a15ce408-9388-4daf-b924-02a2b31b05dc" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/Server/server/Controller/ClientHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/.classpath" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Hangman.userlibraries" beforeDir="false" afterPath="$PROJECT_DIR$/Hangman.userlibraries" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ID1212_Network_Programing_jakmol_Homework_1_Hangman.eml" beforeDir="false" afterPath="$PROJECT_DIR$/ID1212_Network_Programing_jakmol_Homework_1_Hangman.eml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ID1212_Network_Programing_jakmol_Homework_1_Hangman.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ID1212_Network_Programing_jakmol_Homework_1_Hangman.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Client/View/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Client/View/Client.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Client/View/ClientRequestHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Client/View/ClientRequestHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Server/Model/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Server/Model/Game.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Server/server/Controller/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Server/server/Controller/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Client/View/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Client/View/Client.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/Client/View/ClientRequestHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Client/View/ClientRequestHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/Server/Model/Game.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Server/Model/Game.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/Server/server/Controller/Server.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/Server/server/Controller/Server.class" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -54,8 +45,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/Client/View/Client.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="36" column="8" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="21" />
+            <state relative-caret-position="187">
+              <caret line="23" column="45" selection-start-line="23" selection-start-column="45" selection-end-line="23" selection-end-column="45" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1079#1080#0" expanded="true" />
@@ -65,11 +56,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/Client/View/ClientRequestHandler.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-488">
-              <caret line="72" column="30" selection-start-line="72" selection-start-column="30" selection-end-line="72" selection-end-column="30" />
+            <state relative-caret-position="170">
+              <caret line="33" column="5" lean-forward="true" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -77,11 +68,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/Server/server/Controller/Server.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="115">
-              <caret line="62" column="56" selection-start-line="62" selection-start-column="56" selection-end-line="62" selection-end-column="56" />
+            <state relative-caret-position="-786">
+              <caret line="24" column="14" selection-start-line="24" selection-start-column="14" selection-end-line="24" selection-end-column="14" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -188,9 +179,9 @@
         <option value="$PROJECT_DIR$/src/main/java/Server/server/Controller/GameServer.java" />
         <option value="$PROJECT_DIR$/src/main/java/Server/server/Controller/ClientHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/Server/Model/Game.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Client/View/ClientRequestHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/Client/View/Client.java" />
         <option value="$PROJECT_DIR$/src/main/java/Server/server/Controller/Server.java" />
-        <option value="$PROJECT_DIR$/src/main/java/Client/View/ClientRequestHandler.java" />
       </list>
     </option>
   </component>
@@ -285,7 +276,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1573645160985" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1573654011724" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Project" />
@@ -372,12 +363,12 @@
       <workItem from="1572970152750" duration="16584000" />
       <workItem from="1573117914482" duration="7118000" />
       <workItem from="1573564453757" duration="2303000" />
-      <workItem from="1573566946523" duration="18356000" />
+      <workItem from="1573566946523" duration="20185000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="125883000" />
+    <option name="totallyTimeSpent" value="127712000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -574,18 +565,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Client/View/Client.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="36" column="8" selection-start-line="36" selection-start-column="8" selection-end-line="36" selection-end-column="21" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1079#1080#0" expanded="true" />
-            <element signature="e#1107#1108#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Server/server/Controller/GameServer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="408">
@@ -606,20 +585,32 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Server/server/Controller/Server.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/Client/View/Client.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="115">
-          <caret line="62" column="56" selection-start-line="62" selection-start-column="56" selection-end-line="62" selection-end-column="56" />
+        <state relative-caret-position="187">
+          <caret line="23" column="45" selection-start-line="23" selection-start-column="45" selection-end-line="23" selection-end-column="45" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#1079#1080#0" expanded="true" />
+            <element signature="e#1107#1108#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/Client/View/ClientRequestHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-488">
-          <caret line="72" column="30" selection-start-line="72" selection-start-column="30" selection-end-line="72" selection-end-column="30" />
+        <state relative-caret-position="170">
+          <caret line="33" column="5" lean-forward="true" selection-start-line="33" selection-start-column="5" selection-end-line="33" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/Server/server/Controller/Server.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-786">
+          <caret line="24" column="14" selection-start-line="24" selection-start-column="14" selection-end-line="24" selection-end-column="14" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

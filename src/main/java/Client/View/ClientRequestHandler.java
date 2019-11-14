@@ -115,23 +115,9 @@ private int id;
         }
         return "";
     }
-    public void init(){
-        try{
-            this.selector = Selector.open();
-            this.channel.register(selector, SelectionKey.OP_CONNECT);
 
-            this.channel = SocketChannel.open();
-            this.channel.configureBlocking(false);
-            this.channel.connect(new InetSocketAddress("localhost",4444));
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-    }
     public void receiveMessage(SelectionKey key){
         try {
-            //ByteBuffer buffer = (ByteBuffer) key.attachment();
             msgFromServer.clear();
             channel.read(msgFromServer);
 
