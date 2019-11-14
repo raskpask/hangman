@@ -37,11 +37,6 @@ private int id;
 
         timeToSend=true;
 
-        //init();
-
-
-
-            //channel.keyFor(selector).interestOps(SelectionKey.OP_WRITE);
             try {
                 selector = Selector.open();
                 channel.register(selector, SelectionKey.OP_CONNECT);
@@ -55,11 +50,6 @@ private int id;
                     selector.select();
                     for (SelectionKey key : selector.selectedKeys()) {
                         selector.selectedKeys().remove(key);
-                        //Iterator keysIterator = selector.selectedKeys().iterator();
-                        //SelectionKey key = (SelectionKey) keysIterator.next();
-                        //keysIterator.remove();
-                        //selector.wakeup();
-                        //sendMessage(this.message, key);
                         if (!key.isValid()) {
                             continue;
                         }

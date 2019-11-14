@@ -21,9 +21,6 @@ public class Server extends Thread {
 
             System.out.println("Server is starting...");
             Selector selector = Selector.open();
-            //Game game = new Game();
-            //game.start();
-
             listeningSocketChannel = ServerSocketChannel.open();
             listeningSocketChannel.bind(new InetSocketAddress("localhost",4444));
             listeningSocketChannel.configureBlocking(false);
@@ -71,9 +68,6 @@ public class Server extends Thread {
                                 newMessage = this.games[Integer.parseInt(requests[0])].requestHandler(requests[1],token[0]);
                                 newMessage = newMessage + "," + requests[0];
                             }
-                            //Game game = (Game)key.attachment();
-                            //newMessage = game.requestHandler(requests[1], token[0]);
-                            //newMessage = newMessage + ","+ requests[0];
                             key.interestOps(SelectionKey.OP_WRITE);
 
 
@@ -96,13 +90,6 @@ public class Server extends Thread {
                         e.printStackTrace();
                 }
                 }
-                //System.out.println("SERVER: Waiting for new client");
-                //Socket socket = ss.accept();
-                //System.out.println("SERVER: New client connected");
-                //BufferedReader inFromClient = new BufferedReader((new InputStreamReader(socket.getInputStream())));
-                //PrintWriter outToClient = new PrintWriter(socket.getOutputStream(), true);
-                //GameServer gameServer = new GameServer(inFromClient, outToClient);
-                //gameServer.start();
             }
         } catch(Exception e){
             e.printStackTrace();
