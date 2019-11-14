@@ -83,7 +83,6 @@ private int id;
         try {
             msgFromServer.clear();
             channel.read(msgFromServer);
-
             String newMessage = extractMessageFromBuffer();
             String[] response = newMessage.split(",");
             checkAliveAndWin(printer, response);

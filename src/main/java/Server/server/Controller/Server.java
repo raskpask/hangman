@@ -13,9 +13,10 @@ import java.util.Iterator;
 public class Server extends Thread {
     private String newMessage;
     private ByteBuffer msgFromClient = ByteBuffer.allocateDirect(1024);
+    private ByteBuffer msgToClient = ByteBuffer.allocate(1024);
     private ServerSocketChannel listeningSocketChannel;
-    private int gameID=1;
-    private Game[] games= new Game[50];
+    //private int gameID=1;
+    //private Game[] games= new Game[50];
     public void run(){
         try {
             System.out.println("Server is starting...");
