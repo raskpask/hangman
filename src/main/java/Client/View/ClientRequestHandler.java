@@ -5,12 +5,10 @@ package Client.View;
 
 
 import java.io.*;
-import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
 
 public class ClientRequestHandler extends Thread {
 private String token;
@@ -45,7 +43,6 @@ private int id;
                         channel.keyFor(selector).interestOps(SelectionKey.OP_WRITE);
                         timeToSend = false;
                     }
-
 
                     selector.select();
                     for (SelectionKey key : selector.selectedKeys()) {
@@ -110,10 +107,7 @@ private int id;
         try {
             msgFromServer.clear();
             channel.read(msgFromServer);
-
-            //String newMessage = new String(msgFromServer.array());
             String newMessage = extractMessageFromBuffer();
-            //System.out.println("Client got: " + newMessage);
             String[] response = newMessage.split(",");
             checkAliveAndWin(printer, response);
             this.client.setId(Integer.parseInt(response[8]));

@@ -13,9 +13,10 @@ import java.util.Iterator;
 public class Server extends Thread {
     private String newMessage;
     private ByteBuffer msgFromClient = ByteBuffer.allocateDirect(1024);
+    private ByteBuffer msgToClient = ByteBuffer.allocate(1024);
     private ServerSocketChannel listeningSocketChannel;
-    private int gameID=1;
-    private Game[] games= new Game[50];
+    //private int gameID=1;
+    //private Game[] games= new Game[50];
     public void run(){
         try {
 
@@ -40,13 +41,11 @@ public class Server extends Thread {
                             ServerSocketChannel server = (ServerSocketChannel) key.channel();
                             Game game1 = new Game();
                             game1.start();
-                            key.attach(game1);
-
                             System.out.println("The key: "+key.toString());
                             SocketChannel channel = server.accept();
                             System.out.println("New client connected");
                             channel.configureBlocking(false);
-                            channel.register(selector, SelectionKey.OP_READ, ByteBuffer.allocate(1024));
+                            channel.register(selector, SelectionKey.OP_READ,game1);
                             channel.setOption(StandardSocketOptions.SO_LINGER, 5000);
 
                         } else if (key.isReadable()) {
@@ -57,31 +56,22 @@ public class Server extends Thread {
                             System.out.println("Message received: " + clientMessage);
                             String[] token = clientMessage.split(";");
                             String[] requests = token[1].split(":");
-                            if(requests[0].equals("0")){
-                                Game currentGame = new Game();
-                                currentGame.start();
-                                games[gameID] = currentGame;
-                                newMessage = currentGame.requestHandler(requests[1], token[0]);
-                                newMessage = newMessage + "," + gameID;
-                                gameID++;
-                            } else {
-                                newMessage = this.games[Integer.parseInt(requests[0])].requestHandler(requests[1],token[0]);
-                                newMessage = newMessage + "," + requests[0];
-                            }
+
+                            Game game = (Game) key.attachment();
+                            newMessage = game.requestHandler(requests[1],token[0]);
+                            newMessage = newMessage + "," + requests[0];
                             key.interestOps(SelectionKey.OP_WRITE);
 
 
                         } else if (key.isWritable()) {
                             SocketChannel channel = (SocketChannel) key.channel();
-                            ByteBuffer buffer = (ByteBuffer) key.attachment();
-
                             byte[] messageToClient = this.newMessage.getBytes();
-                            buffer = ByteBuffer.wrap(messageToClient);
-                            channel.write(buffer);
-                            if (buffer.hasRemaining()) {
-                                buffer.compact();
+                            msgToClient = ByteBuffer.wrap(messageToClient);
+                            channel.write(msgToClient);
+                            if (msgToClient.hasRemaining()) {
+                                msgToClient.compact();
                             } else {
-                                buffer.clear();
+                                msgToClient.clear();
                             }
                             key.interestOps(SelectionKey.OP_READ);
                             System.out.println("Message sent: " + this.newMessage);
@@ -100,6 +90,9 @@ public class Server extends Thread {
         byte[] bytes = new byte[msgFromClient.remaining()];
         msgFromClient.get(bytes);
         return new String(bytes);
+    }
+    private void readMessage(){
+
     }
 
 }
