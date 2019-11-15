@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 public class Attachment {
     private Game game;
     private ByteBuffer buffer;
+    private String newMessage;
 
     public Attachment(Game game ,ByteBuffer buffer){
         this.buffer=buffer;
@@ -18,6 +19,14 @@ public class Attachment {
     }
 
     public ByteBuffer getBuffer(){
+
         return buffer;
+    }
+
+    public void setNewMessage(String message) {
+        this.newMessage = message;
+    }
+    public String getNewMessage(){
+        return newMessage;
     }
 }

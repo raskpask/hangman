@@ -1,15 +1,36 @@
 package Server.Model;
 
 import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.*;
 
 public class WordHandler extends Thread{
     private String userHome = System.getProperty("user.dir");
     private final String WORD_FILE = userHome + "/src/main/java/Server/Model/words.txt";
     private Random randomGenerator = new Random();
+    private FileChannel outChannel;
 
-    public void run(Game game){
-        game.setWord(getWord());
+    public void run(){
+        try {
+                FileInputStream fis = new FileInputStream(new File(WORD_FILE));
+                FileOutputStream fos = new FileOutputStream(new File(WORD_FILE));
+                FileChannel inChannel = fis.getChannel();
+                outChannel = fos.getChannel();
+                ByteBuffer buffer = ByteBuffer.allocate(8192);
+                int c = 0;
+                while ((c = inChannel.read(buffer)) != -1) {
+                    buffer.flip();
+                    outChannel.write(buffer);
+                    buffer.clear();
+                }
+
+        }catch(Exception e){
+
+        }
+    }
+    public FileChannel getOutChannel(){
+        return outChannel;
     }
     public String getWord(){
         String word = "";

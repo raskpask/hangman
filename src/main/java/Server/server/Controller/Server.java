@@ -74,8 +74,9 @@ public class Server extends Thread {
         try{
             SocketChannel channel = (SocketChannel) key.channel();
             ByteBuffer buffer;// = (ByteBuffer) key.attachment();
+            Attachment attachment = (Attachment) key.attachment();
 
-            byte[] messageToClient = this.newMessage.getBytes();
+            byte[] messageToClient = attachment.getNewMessage().getBytes();
             buffer = ByteBuffer.wrap(messageToClient);
             channel.write(buffer);
             if (buffer.hasRemaining()) {
@@ -84,7 +85,7 @@ public class Server extends Thread {
                 buffer.clear();
             }
             key.interestOps(SelectionKey.OP_READ);
-            System.out.println("Message sent: " + this.newMessage);
+            System.out.println("Message sent: " + attachment.getNewMessage());
         }catch (Exception e){
             e.printStackTrace();
             System.out.println("Error sending message");
@@ -101,9 +102,7 @@ public class Server extends Thread {
             System.out.println("Message received: " + clientMessage);
             String[] token = clientMessage.split(";");
             String[] requests = token[1].split(":");
-            newMessage = attachment.getGame().requestHandler(requests[1],token[0]);
-            newMessage = newMessage + "," + requests[0];
-            
+            attachment.setNewMessage(attachment.getGame().requestHandler(requests[1],token[0])+","+requests[0]);
             key.interestOps(SelectionKey.OP_WRITE);
         }catch (Exception e){
             e.printStackTrace();

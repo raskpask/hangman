@@ -1,5 +1,6 @@
 package Server.Model;
 
+import java.nio.channels.SelectionKey;
 import java.util.ArrayList;
 import java.lang.*;
 
@@ -17,6 +18,7 @@ public class Game extends Thread {
     private JavaToken javaToken = new JavaToken();
     private String usernameDB="jakob";
     private String passwordDB="molin";
+    private String request;
 
     public void run() {
     }
@@ -25,10 +27,9 @@ public class Game extends Thread {
     }
     // The request string will look like: "request,letter/word"
     // The response string will look like: "request,requestInfo,remainingAttempts,Score,Alive,usedLetters,Win"
-    public String requestHandler(String request,String token)throws InterruptedException{
+    public String requestHandler(String request, String token)throws InterruptedException{
         request = request.trim();
         String[] requestArray = request.split(",");
-        System.out.println("Message in request handler: "+request);
 
         if(token.length()<1){
             token = "token";
@@ -43,7 +44,6 @@ public class Game extends Thread {
                 }
             case "guess":
                 if(javaToken.validateKey(token,this.usernameDB)) {
-
                     guess(requestArray[1].toCharArray());
                     checkVictoryOrLoss();
                     return "guess," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
@@ -69,7 +69,7 @@ public class Game extends Thread {
     }
 
     private void newWord(){
-        //wordHandler.start();
+        this.wordHandler.start();
         this.usedLetters="";
         this.hasWon=false;
         this.remainingAttempts = 7;
