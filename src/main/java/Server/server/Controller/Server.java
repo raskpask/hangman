@@ -11,11 +11,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
 public class Server extends Thread {
-    private String newMessage;
-    private ByteBuffer msgFromClient = ByteBuffer.allocateDirect(1024);
     private ServerSocketChannel listeningSocketChannel;
-    private int gameID=1;
-    private Game[] games= new Game[50];
     public void run(){
         try {
             System.out.println("Server is starting...");
@@ -57,14 +53,12 @@ public class Server extends Thread {
     private void startConnection(SelectionKey key,Selector selector){
         try{
             ServerSocketChannel server = (ServerSocketChannel) key.channel();
-            System.out.println("The key: "+key.toString());
             SocketChannel channel = server.accept();
             System.out.println("New client connected");
 
             channel.configureBlocking(false);
             channel.register(selector, SelectionKey.OP_READ, new Attachment(new Game(),ByteBuffer.allocate(1024)));
             channel.setOption(StandardSocketOptions.SO_LINGER, 5000);
-            //key.attach(new Attachment(new Game(),(ByteBuffer) key.attachment()));
         }catch (Exception e){
             e.printStackTrace();
             System.out.println("Error connecting");
@@ -73,10 +67,9 @@ public class Server extends Thread {
     private void sendMessage(SelectionKey key){
         try{
             SocketChannel channel = (SocketChannel) key.channel();
-            ByteBuffer buffer;// = (ByteBuffer) key.attachment();
+            ByteBuffer buffer;
             Attachment attachment = (Attachment) key.attachment();
-
-            byte[] messageToClient = attachment.getNewMessage().getBytes();
+            byte[] messageToClient = attachment.getGame().getMessageToClient().getBytes();
             buffer = ByteBuffer.wrap(messageToClient);
             channel.write(buffer);
             if (buffer.hasRemaining()) {
@@ -85,7 +78,7 @@ public class Server extends Thread {
                 buffer.clear();
             }
             key.interestOps(SelectionKey.OP_READ);
-            System.out.println("Message sent: " + attachment.getNewMessage());
+            System.out.println("Message sent: " + attachment.getGame().getMessageToClient());
         }catch (Exception e){
             e.printStackTrace();
             System.out.println("Error sending message");
@@ -102,7 +95,7 @@ public class Server extends Thread {
             System.out.println("Message received: " + clientMessage);
             String[] token = clientMessage.split(";");
             String[] requests = token[1].split(":");
-            attachment.setNewMessage(attachment.getGame().requestHandler(requests[0],token[0],key,selector));
+            attachment.getGame().makeMessageToClient(requests[0],token[0],key,selector);
             if(!attachment.getGame().getLastRequestNewWord()) {
                 key.interestOps(SelectionKey.OP_WRITE);
             }

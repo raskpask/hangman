@@ -21,6 +21,9 @@ public class Game extends Thread {
     private String passwordDB="molin";
     private boolean lastRequestNewWord=false;
 
+    private String request;
+    String[] requestArray;
+
     public void run() {
     }
     public void setWord(String word){
@@ -35,35 +38,34 @@ public class Game extends Thread {
     public boolean getLastRequestNewWord(){
         return this.lastRequestNewWord;
     }
-    // The request string will look like: "request,letter/word"
-    // The response string will look like: "request,requestInfo,remainingAttempts,Score,Alive,usedLetters,Win"
-    public String requestHandler(String request, String token, SelectionKey key, Selector selector)throws InterruptedException{
-        request = request.trim();
-        String[] requestArray = request.split(",");
+    public void makeMessageToClient(String request, String token, SelectionKey key, Selector selector)throws InterruptedException{
+        makeRequestHandler(request,token,key,selector);
+        this.request=request;
+        this.token=token;
+    }
+    public String getMessageToClient(){
+        return extractResponse();
+    }
+    private String extractResponse(){
 
-        if(token.length()<1){
-            token = "token";
+        if(this.token.length()<1){
+            this.token = "token";
         }
-        switch(requestArray[0]) {
+        switch(this.requestArray[0]) {
             case "newWord":
-                if(javaToken.validateKey(token,this.usernameDB)) {
-                    this.newWord(key,selector);
+                if(javaToken.validateKey(this.token,this.usernameDB)) {
                     return "newWord," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
                 } else {
                     return "loginError," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
                 }
             case "guess":
-                if(javaToken.validateKey(token,this.usernameDB)) {
-                    guess(requestArray[1].toCharArray());
-                    checkVictoryOrLoss();
+                if(javaToken.validateKey(this.token,this.usernameDB)) {
                     return "guess," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
                 } else {
                     return "loginError," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
                 }
             case "guessWord":
-                if(javaToken.validateKey(token,this.usernameDB)) {
-                    this.guessWord(requestArray[1]);
-                    checkVictoryOrLoss();
+                if(javaToken.validateKey(this.token,this.usernameDB)) {
                     return "guessWord," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
                 } else {
                     return "loginError," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
@@ -74,25 +76,45 @@ public class Game extends Thread {
                 } else {
                     return "loginError," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
                 }
-            }
+        }
         return "error2";
+    }
+    // The request string will look like: "request,letter/word"
+    // The response string will look like: "request,requestInfo,remainingAttempts,Score,Alive,usedLetters,Win"
+    public void makeRequestHandler(String request, String token, SelectionKey key, Selector selector)throws InterruptedException{
+        request = request.trim();
+        this.requestArray = request.split(",");
+        this.token=token;
+
+        switch(requestArray[0]) {
+            case "newWord":
+                    newWord(key,selector);
+                break;
+            case "guess":
+                    guess(requestArray[1].toCharArray());
+                    checkVictoryOrLoss();
+                break;
+            case "guessWord":
+                    this.guessWord(requestArray[1]);
+                    checkVictoryOrLoss();
+                break;
+            }
     }
 
     private void newWord(SelectionKey key,Selector selector){
-        WordHandler wordHandler = new WordHandler(key,this,selector);
-        wordHandler.start();
+        if(wordHandler == null){
+            WordHandler wordHandler = new WordHandler(key,this,selector);
+            wordHandler.start();
+        } else{
+            wordHandler.getNewWord();
+        }
+
         this.usedLetters="";
         this.hasWon=false;
         this.remainingAttempts = 7;
         this.alive=true;
-        //this.word=wordHandler.getWord();
         this.currentHiddenWord ="";
         this.lastRequestNewWord=true;
-        //while(word.equals(null)){}
-        //for(int i=0; i<this.word.length();i++){
-        //    this.currentHiddenWord +="_ ";
-        //}
-
     }
 
     private void guess(char[] letters){
