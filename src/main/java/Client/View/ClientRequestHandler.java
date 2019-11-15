@@ -16,18 +16,16 @@ private Client client;
 private boolean messageRecived=false;
 private boolean timeToSend=false;
 private ByteBuffer msgFromServer = ByteBuffer.allocateDirect(1024);
-private int id;
 
-    public ClientRequestHandler(SocketChannel channel, Gameboard printer, String message, String token, Client client, int id){
+    public ClientRequestHandler(SocketChannel channel, Gameboard printer, String message, String token, Client client){
         this.channel=channel;
         this.printer=printer;
         this.message=message;
         this.token=token;
         this.client=client;
-        this.id=id;
     }
     public void run(){
-        this.message = token+";"+id+":"+this.message+"                                                                                                                                           ";
+        this.message = token+";"+this.message+"                                                                                                                                           ";
         timeToSend=true;
 
             try {
@@ -87,7 +85,6 @@ private int id;
             String newMessage = extractMessageFromBuffer();
             String[] response = newMessage.split(",");
             checkAliveAndWin(printer, response);
-            this.client.setId(Integer.parseInt(response[8]));
             this.client.setToken(response[7]);
             if (response[0].equals("loginError")) {
                 this.printer.loginErrorLine();

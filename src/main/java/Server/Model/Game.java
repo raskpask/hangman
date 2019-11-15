@@ -1,6 +1,7 @@
 package Server.Model;
 
 import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 import java.util.ArrayList;
 import java.lang.*;
 
@@ -14,20 +15,29 @@ public class Game extends Thread {
     private String word = "";
     private String currentHiddenWord=" ";
     private String token= "token";
-    private WordHandler wordHandler = new WordHandler();
+    private WordHandler wordHandler;
     private JavaToken javaToken = new JavaToken();
     private String usernameDB="jakob";
     private String passwordDB="molin";
-    private String request;
+    private boolean lastRequestNewWord=false;
 
     public void run() {
     }
     public void setWord(String word){
         this.word=word;
     }
+    public void setCurrentHiddenWord(String currentHiddenWord){
+        this.currentHiddenWord = currentHiddenWord;
+    }
+    public void setWordHandler(WordHandler wordHandler){
+        this.wordHandler = wordHandler;
+    }
+    public boolean getLastRequestNewWord(){
+        return this.lastRequestNewWord;
+    }
     // The request string will look like: "request,letter/word"
     // The response string will look like: "request,requestInfo,remainingAttempts,Score,Alive,usedLetters,Win"
-    public String requestHandler(String request, String token)throws InterruptedException{
+    public String requestHandler(String request, String token, SelectionKey key, Selector selector)throws InterruptedException{
         request = request.trim();
         String[] requestArray = request.split(",");
 
@@ -37,7 +47,7 @@ public class Game extends Thread {
         switch(requestArray[0]) {
             case "newWord":
                 if(javaToken.validateKey(token,this.usernameDB)) {
-                    this.newWord();
+                    this.newWord(key,selector);
                     return "newWord," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
                 } else {
                     return "loginError," + this.currentHiddenWord + "," + this.remainingAttempts + "," + this.score + "," + this.alive + "," + this.usedLetters + "," + this.hasWon + "," + this.token;
@@ -68,23 +78,26 @@ public class Game extends Thread {
         return "error2";
     }
 
-    private void newWord(){
-        this.wordHandler.start();
+    private void newWord(SelectionKey key,Selector selector){
+        WordHandler wordHandler = new WordHandler(key,this,selector);
+        wordHandler.start();
         this.usedLetters="";
         this.hasWon=false;
         this.remainingAttempts = 7;
         this.alive=true;
-        this.word=wordHandler.getWord();
+        //this.word=wordHandler.getWord();
         this.currentHiddenWord ="";
-        while(word.equals(null)){}
-        for(int i=0; i<this.word.length();i++){
-            this.currentHiddenWord +="_ ";
-        }
+        this.lastRequestNewWord=true;
+        //while(word.equals(null)){}
+        //for(int i=0; i<this.word.length();i++){
+        //    this.currentHiddenWord +="_ ";
+        //}
 
     }
 
     private void guess(char[] letters){
         if(!hasWon) {
+            this.lastRequestNewWord=false;
             char guessedLetter = Character.toLowerCase(letters[0]);
             this.usedLetters += guessedLetter+" ";
             char[] currentHiddenWord = this.currentHiddenWord.toCharArray();
@@ -106,6 +119,7 @@ public class Game extends Thread {
     }
 
     private void guessWord(String guess){
+        this.lastRequestNewWord=false;
         if(this.currentHiddenWord.equals(this.wordHandler.checkWord(this.word,guess,this.currentHiddenWord))){
             this.remainingAttempts--;
         }
@@ -125,6 +139,7 @@ public class Game extends Thread {
     }
 
     private boolean login(String username,String password){
+        this.lastRequestNewWord=false;
         if(checkCredentials(username,password)) {
             this.token=javaToken.createKey(username);
             return true;

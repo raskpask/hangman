@@ -37,7 +37,7 @@ public class Server extends Thread {
                     if (key.isAcceptable()) {
                         startConnection(key,selector);
                     } else if (key.isReadable()) {
-                        reciveMessage(key);
+                        reciveMessage(key,selector);
 
                     } else if (key.isWritable()) {
                         sendMessage(key);
@@ -91,7 +91,7 @@ public class Server extends Thread {
             System.out.println("Error sending message");
         }
     }
-    private void reciveMessage(SelectionKey key){
+    private void reciveMessage(SelectionKey key,Selector selector){
         try{
             SocketChannel channel = (SocketChannel) key.channel();
             Attachment attachment = (Attachment) key.attachment();
@@ -102,12 +102,15 @@ public class Server extends Thread {
             System.out.println("Message received: " + clientMessage);
             String[] token = clientMessage.split(";");
             String[] requests = token[1].split(":");
-            attachment.setNewMessage(attachment.getGame().requestHandler(requests[1],token[0])+","+requests[0]);
-            key.interestOps(SelectionKey.OP_WRITE);
+            attachment.setNewMessage(attachment.getGame().requestHandler(requests[0],token[0],key,selector));
+            if(!attachment.getGame().getLastRequestNewWord()) {
+                key.interestOps(SelectionKey.OP_WRITE);
+            }
         }catch (Exception e){
             e.printStackTrace();
             System.out.println("Error reciving message");
         }
     }
+
 
 }

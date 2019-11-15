@@ -6,7 +6,6 @@ import java.nio.channels.SocketChannel;
 
 public class Client extends Thread{
 private String token;
-private int id;
 
     public void run(){
 
@@ -20,7 +19,7 @@ private int id;
             System.out.println(printer.getGameboard()+printer.gameInfo());
             while(true) {
                 message = inputHandler(inFromUser.readLine(),inFromUser);
-                ClientRequestHandler clientRequestHandler = new ClientRequestHandler(channel,printer,message,this.token,this,this.id);
+                ClientRequestHandler clientRequestHandler = new ClientRequestHandler(channel,printer,message,this.token,this);
                 clientRequestHandler.start();
             }
         }catch(Exception e){
@@ -33,9 +32,6 @@ private int id;
         this.token = token;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     private String inputHandler(String input, BufferedReader inFromUser){
         if(0<input.length() && input.length()<2){
