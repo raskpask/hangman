@@ -24,6 +24,9 @@ private ByteBuffer msgFromServer = ByteBuffer.allocateDirect(1024);
         this.token=token;
         this.client=client;
     }
+    public ClientRequestHandler(SocketChannel channel){
+        this.channel=channel;
+    }
     public void run(){
         this.message = token+";"+this.message+"                                                                                                                                           ";
         timeToSend=true;

@@ -19,8 +19,12 @@ private String token;
             System.out.println(printer.getGameboard()+printer.gameInfo());
             while(true) {
                 message = inputHandler(inFromUser.readLine(),inFromUser);
-                ClientRequestHandler clientRequestHandler = new ClientRequestHandler(channel,printer,message,this.token,this);
-                clientRequestHandler.start();
+                if(!message.equals(":WrongInput:")) {
+                    ClientRequestHandler clientRequestHandler = new ClientRequestHandler(channel, printer, message, this.token, this);
+                    clientRequestHandler.start();
+                } else {
+                    System.out.println(printer.getGameboard()+printer.gameInfo());
+                }
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -40,18 +44,20 @@ private String token;
             //this.header.setRequest(":newWord,"+input);
             return "newWord";
         } else if(input.equals("login")){
-            System.out.println("Write username and password separated with ',' like: user,pass ");
+            System.out.println("Write username and press enter");
             String credentials="";
             try {
                 credentials = inFromUser.readLine();
+                System.out.println("Write password and press enter");
+                credentials += ","+ inFromUser.readLine();
             } catch (Exception e){
                 e.printStackTrace();
             }
             return "login,"+ credentials;
         } else if(input.length()<1) {
             //this.header.setRequest(":guess, ");
-            System.out.println("You have to write something a attempt will be lost");
-            return "guess, ";
+            System.out.println("You have to write something!");
+            return ":WrongInput:";
         } else if (input.equals("quit")) {
 
             System.exit(0);

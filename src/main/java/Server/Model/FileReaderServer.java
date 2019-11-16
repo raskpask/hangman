@@ -1,6 +1,5 @@
 package Server.Model;
 
-
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -13,9 +12,9 @@ public class FileReaderServer extends Thread {
     private String word;
     private Game game;
     private SelectionKey serverKey;
-    private boolean wordSent= false;
     private Selector selector;
     private WordHandler wordHandler;
+    private WordExtractor wordExtractor;
 
     public FileReaderServer(Game game,SelectionKey serverKey,Selector selector,WordHandler wordHandler){
         this.game=game;
@@ -31,24 +30,25 @@ public class FileReaderServer extends Thread {
             listeningSocketChannel.configureBlocking(false);
             listeningSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 
-            while(!wordSent) {
+            while(true) {
                 selector.select();
                 Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
                 while (keys.hasNext()){
                     SelectionKey key = keys.next();
                     keys.remove();
-                    if (!key.isValid()) {
-                        continue;
-                    }
                     if (key.isAcceptable()) {
                         ServerSocketChannel server = (ServerSocketChannel) key.channel();
                         SocketChannel channel = server.accept();
                         channel.configureBlocking(false);
                         channel.register(selector, SelectionKey.OP_READ);
                         System.out.println("New client to fileReaderServer");
+
                     } else if (key.isReadable()) {
-                        WordExtractor wordExtractor = new WordExtractor(this,key,selector);
-                        wordExtractor.start();
+                        if(wordExtractor == null) {
+                            wordExtractor = new WordExtractor(this, key, selector);
+                            wordExtractor.start();
+                        }
+
                     } else if (key.isWritable()) {
                         write(key);
                     }
@@ -68,15 +68,15 @@ public class FileReaderServer extends Thread {
         game.setCurrentHiddenWord(currentHiddenWord);
         game.setWordHandler(wordHandler);
         wordHandler.setWord(word);
-        System.out.println("write has been set in server: "+word);
         serverKey.interestOps(SelectionKey.OP_WRITE);
         key.interestOps(SelectionKey.OP_READ);
-        wordSent=true;
         selector.wakeup();
-        //write=false;
     }
     public void setWord(String word){
         this.word = word;
+    }
+    public void removeWordExtractor(){
+        this.wordExtractor = null;
     }
 
 }
