@@ -10,7 +10,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
-public class Server extends Thread {
+public class Server {
     private ServerSocketChannel listeningSocketChannel;
     public void run(){
         try {
